@@ -8,6 +8,7 @@ export const fetchDishes = createAsyncThunk(
   "dishes/fetchDishes",
   async (): Promise<IDish[]> => {
     const response = await axios.get<IDish[]>("/dishes");
+    console.log(response.data);
     return response.data;
   }
 );
