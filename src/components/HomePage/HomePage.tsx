@@ -48,7 +48,7 @@ const HomePage: React.FC = () => {
       <Container style={{ display: "flex"}}>
         <Box
           mt={10}
-          ml={-5}
+          ml={-10}
           pr={10}
           style={{ display: "flex", flexDirection: "column" }}
         >
