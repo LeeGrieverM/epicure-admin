@@ -5,11 +5,14 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  IconButton,
 } from "@mui/material";
 import { StyledTableCell } from "./GenericTable.style";
 import { IRestaurant, IChef, IDish, DataType } from "../../types/types";
 import { useState } from "react";
 import { renderStars } from "./GenericTable.utils";
+import DeleteIcon from '@mui/icons-material/Delete';
+import RestoreIcon from '@mui/icons-material/Restore';
 
 interface Column<T> {
   id: string;
@@ -19,9 +22,10 @@ interface Column<T> {
 
 interface Props {
   data: (IRestaurant | IChef | IDish)[];
+  onAction: (item: IChef | IDish | IRestaurant) => void;
 }
 
-const GenericTable: React.FC<Props> = ({ data }) => {
+const GenericTable: React.FC<Props> = ({ data, onAction }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
 
   const getColumns = (
@@ -157,6 +161,15 @@ const GenericTable: React.FC<Props> = ({ data }) => {
         },
       ];
     }
+    columns.push({
+      id: "actions",
+      label: "",
+      getValue: (item) => (
+        <IconButton onClick={() => onAction(item)} aria-label="delete">
+        {item.isActive ? <DeleteIcon /> : <RestoreIcon />}
+      </IconButton>
+      ),
+    });
 
     return columns;
   };
