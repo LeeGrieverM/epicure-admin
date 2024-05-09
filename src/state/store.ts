@@ -1,14 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import restaurantReducer from './restaurant/restaurantsSlice';
-import dishesReducer from './dish/dishesSlice';
-import chefsReducer from './chef/chefSlice';
+import dataReducer from './DataTable/DataTable.slice';
 
 
 export const store = configureStore({
   reducer: {
-    restaurants: restaurantReducer,
-    dishes: dishesReducer,
-    chefs: chefsReducer,
+    data: dataReducer,
   },
 });
 
