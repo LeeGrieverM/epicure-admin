@@ -4,14 +4,15 @@ import { RootState, AppDispatch } from "../../state/store";
 import GenericTable from "../GenericTable/GenericTable";
 import { IRestaurant, IChef, IDish, DataType } from "../../types/types";
 import { StyledContainer, StyledBox, StyledButton } from "./HomePage.style";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchData } from "../../state/DataTable/DataTable.thunk";
 
 const HomePage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const data = useSelector((state: RootState) => state.data.value);
-  const [selectedMenu, setSelectedMenu] = React.useState<string>("restaurants");
   const navigate = useNavigate();
+  const { model } = useParams();
+  const [selectedMenu, setSelectedMenu] = React.useState<string>(model || DataType.Restaurants);
 
   useEffect(() => {
     switch (selectedMenu) {
@@ -31,7 +32,7 @@ const HomePage: React.FC = () => {
 
   const handleMenuClick = (model: string) => {
     setSelectedMenu(model);
-    navigate(`/dashboard/:${model}`);
+    navigate(`/dashboard/${model}`);
   };
 
   return (
