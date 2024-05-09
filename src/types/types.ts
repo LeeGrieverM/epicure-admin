@@ -27,3 +27,9 @@ export interface IRestaurant {
   stars: number;
   isActive?: boolean;
 }
+
+export enum DataType {
+  Restaurants = "restaurants",
+  Chefs = "chefs",
+  Dishes = "dishes",
+}

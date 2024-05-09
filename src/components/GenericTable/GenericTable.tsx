@@ -6,9 +6,10 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import { IRestaurant, IChef, IDish } from "../../types/types";
+import { StyledTableCell } from "./GenericTable.style";
+import { IRestaurant, IChef, IDish, DataType } from "../../types/types";
 import { useState } from "react";
-import { renderStars } from "./utils";
+import { renderStars } from "./GenericTable.utils";
 
 interface Column<T> {
   id: string;
@@ -22,7 +23,7 @@ interface Props {
 
 const GenericTable: React.FC<Props> = ({ data }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
-  
+
   const getColumns = (
     dataType: string
   ): Column<IRestaurant | IChef | IDish>[] => {
@@ -57,7 +58,7 @@ const GenericTable: React.FC<Props> = ({ data }) => {
       },
     ];
 
-    if (dataType === "chef") {
+    if (dataType === DataType.Chefs) {
       columns = [
         ...columns,
         {
@@ -110,7 +111,7 @@ const GenericTable: React.FC<Props> = ({ data }) => {
           ),
         },
       ];
-    } else if (dataType === "dish") {
+    } else if (dataType === DataType.Dishes) {
       columns = [
         ...columns,
         {
@@ -135,7 +136,7 @@ const GenericTable: React.FC<Props> = ({ data }) => {
           getValue: (item) => `₪${(item as IDish).price.toFixed(2)}`,
         },
       ];
-    } else if (dataType === "restaurant") {
+    } else if (dataType === DataType.Restaurants) {
       columns = [
         ...columns,
         {
@@ -165,10 +166,10 @@ const GenericTable: React.FC<Props> = ({ data }) => {
   }
 
   const dataType = Object.prototype.hasOwnProperty.call(data[0], "description")
-    ? "chef"
+    ? DataType.Chefs
     : Object.prototype.hasOwnProperty.call(data[0], "ingredients")
-    ? "dish"
-    : "restaurant";
+    ? DataType.Dishes
+    : DataType.Restaurants;
   const columns = getColumns(dataType);
 
   return (
@@ -176,9 +177,7 @@ const GenericTable: React.FC<Props> = ({ data }) => {
       <TableHead>
         <TableRow>
           {columns.map((column) => (
-            <TableCell key={column.id} style={{ width: "400px" }}>
-              {column.label}
-            </TableCell>
+            <StyledTableCell key={column.id}>{column.label}</StyledTableCell>
           ))}
         </TableRow>
       </TableHead>

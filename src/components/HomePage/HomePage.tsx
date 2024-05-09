@@ -1,65 +1,63 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import { RootState, AppDispatch } from "../../state/store";
-import { fetchRestaurants } from "../../state/restaurant/restaurantThunk";
-import { fetchChefs } from "../../state/chef/chefThunk";
-import { fetchDishes } from "../../state/dish/dishThunk";
 import GenericTable from "../GenericTable/GenericTable";
-import { IRestaurant, IChef, IDish } from "../../types/types";
+import { IRestaurant, IChef, IDish, DataType } from "../../types/types";
+import { StyledContainer, StyledBox, StyledButton } from "./HomePage.style";
+import { useNavigate } from "react-router-dom";
+import { fetchData } from "../../state/DataTable/DataTable.thunk";
 
 const HomePage: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const restaurants = useSelector((state: RootState) => state.restaurants.value);
-  const chefs = useSelector((state: RootState) => state.chefs.value);
-  const dishes = useSelector((state: RootState) => state.dishes.value);
-  const [selectedMenu, setSelectedMenu] = React.useState<"restaurants" | "chefs" |"dishes">("restaurants");
+  const data = useSelector((state: RootState) => state.data.value);
+  const [selectedMenu, setSelectedMenu] = React.useState<string>("restaurants");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchRestaurants());
-    dispatch(fetchChefs());
-    dispatch(fetchDishes());
-  }, [dispatch]);
-
-  const renderTable = () => {
-    let data: IRestaurant[] | IChef[] | IDish[];
-
     switch (selectedMenu) {
-      case "restaurants":
-        data = restaurants;
+      case DataType.Restaurants:
+        dispatch(fetchData(`/${DataType.Restaurants}`));
         break;
-      case "chefs":
-        data = chefs;
+      case DataType.Chefs:
+        dispatch(fetchData(`/${DataType.Chefs}`));
         break;
-      case "dishes":
-        data = dishes;
+      case DataType.Dishes:
+        dispatch(fetchData(`/${DataType.Dishes}`));
         break;
       default:
-        data = [];
+        break;
     }
+  }, [dispatch, selectedMenu]);
 
-    return <GenericTable data={data} />;
+  const handleMenuClick = (model: string) => {
+    setSelectedMenu(model);
+    navigate(`/dashboard/:${model}`);
   };
 
   return (
     <>
-      <Container style={{ display: "flex"}}>
-        <Box
-          mt={10}
-          ml={-10}
-          pr={10}
-          style={{ display: "flex", flexDirection: "column" }}
-        >
-          <Button onClick={() => setSelectedMenu("restaurants")}>
+      <StyledContainer>
+        <StyledBox>
+          <StyledButton onClick={() => handleMenuClick(DataType.Restaurants)}>
             Restaurants
-          </Button>
-          <Button onClick={() => setSelectedMenu("chefs")}>Chefs</Button>
-          <Button onClick={() => setSelectedMenu("dishes")}>Dishes</Button>
-        </Box>
-        {renderTable()}
-      </Container>
+          </StyledButton>
+          <StyledButton onClick={() => handleMenuClick(DataType.Chefs)}>
+            Chefs
+          </StyledButton>
+          <StyledButton onClick={() => handleMenuClick(DataType.Dishes)}>
+            Dishes
+          </StyledButton>
+        </StyledBox>
+        <GenericTable
+          data={
+            selectedMenu === DataType.Restaurants
+              ? (data as IRestaurant[])
+              : selectedMenu === DataType.Chefs
+              ? (data as IChef[])
+              : (data as IDish[])
+          }
+        />
+      </StyledContainer>
     </>
   );
 };
