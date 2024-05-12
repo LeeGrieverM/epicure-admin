@@ -10,3 +10,17 @@ export const fetchData = createAsyncThunk(
     return response.data;
   }
 );
+
+export const deleteData = createAsyncThunk(
+  "data/deleteData",
+  async (url: string): Promise<void> => {
+    await axios.delete(url);
+  }
+);
+
+export const restoreData = createAsyncThunk(
+  "data/restoreData",
+  async (url: string): Promise<void> => {
+    await axios.put(url, { "isActive": true }); 
+  }
+);

@@ -1,16 +1,19 @@
 import {
-  Button,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
+  IconButton,
 } from "@mui/material";
 import { StyledTableCell } from "./GenericTable.style";
 import { IRestaurant, IChef, IDish, DataType } from "../../types/types";
 import { useState } from "react";
 import { renderStars } from "./GenericTable.utils";
-
+import DeleteIcon from "@mui/icons-material/Delete";
+import RestoreIcon from "@mui/icons-material/Restore";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 interface Column<T> {
   id: string;
   label: string;
@@ -19,9 +22,10 @@ interface Column<T> {
 
 interface Props {
   data: (IRestaurant | IChef | IDish)[];
+  onAction: (item: IChef | IDish | IRestaurant) => void;
 }
 
-const GenericTable: React.FC<Props> = ({ data }) => {
+const GenericTable: React.FC<Props> = ({ data, onAction }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
 
   const getColumns = (
@@ -73,11 +77,11 @@ const GenericTable: React.FC<Props> = ({ data }) => {
                   ? (item as IChef).description
                   : shortDescription}
                 {descriptionWords.length > 25 && (
-                  <Button
+                  <IconButton
                     onClick={() => setShowFullDescription(!showFullDescription)}
                   >
-                    {"⬇︎"}
-                  </Button>
+                    {showFullDescription? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  </IconButton>
                 )}
               </>
             );
@@ -91,25 +95,25 @@ const GenericTable: React.FC<Props> = ({ data }) => {
               .map((restaurant) => restaurant.name)
               .join(", "),
         },
-        {
-          id: "isChefOfTheWeek",
-          label: "Chef of the Month",
+        // {
+        //   id: "isChefOfTheWeek",
+        //   label: "Chef of the Month",
 
-          getValue: (item) => (
-            <span
-              style={{
-                backgroundColor: (item as IChef).isChefOfTheWeek
-                  ? "green"
-                  : "red",
-                color: "white",
-                padding: "4px 8px",
-                borderRadius: "4px",
-              }}
-            >
-              {(item as IChef).isChefOfTheWeek ? "Yes" : "No"}
-            </span>
-          ),
-        },
+        //   getValue: (item) => (
+        //     <span
+        //       style={{
+        //         backgroundColor: (item as IChef).isChefOfTheWeek
+        //           ? "green"
+        //           : "red",
+        //         color: "white",
+        //         padding: "4px 8px",
+        //         borderRadius: "4px",
+        //       }}
+        //     >
+        //       {(item as IChef).isChefOfTheWeek ? "Yes" : "No"}
+        //     </span>
+        //   ),
+        // },
       ];
     } else if (dataType === DataType.Dishes) {
       columns = [
@@ -157,6 +161,15 @@ const GenericTable: React.FC<Props> = ({ data }) => {
         },
       ];
     }
+    columns.push({
+      id: "actions",
+      label: "",
+      getValue: (item) => (
+        <IconButton onClick={() => onAction(item)} aria-label="delete">
+          {item.isActive ? <DeleteIcon /> : <RestoreIcon />}
+        </IconButton>
+      ),
+    });
 
     return columns;
   };

@@ -1,5 +1,5 @@
 export interface IChef {
-  id: string;
+  _id: string;
   name: string;
   image: string;
   description: string;
@@ -9,7 +9,7 @@ export interface IChef {
 }
 
 export interface IDish {
-  id: string;
+  _id: string;
   name: string;
   image: string;
   ingredients: string;
@@ -19,7 +19,7 @@ export interface IDish {
 }
 
 export interface IRestaurant {
-  id: string;
+  _id: string;
   name: string;
   image: string;
   chef: IChef;
